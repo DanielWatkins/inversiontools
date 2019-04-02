@@ -1,5 +1,8 @@
 # inversiontools
-This package contains tools for identifying temperature inversions within radiosonde profiles. Temperature inversions are defined as regions where temperature increases with height. Algorithms for identifying inversions can broadly be devided into fixed level differencing methods, profile methods, and other. 
+inversiontools is a set of functions for identifying and characterizing temperature inversions from radiosonde profile data. Temperature inversions are defined a variety of ways in meteorology and climate science. The functions here are designed to recreate common methods for quantifying temperature inversions while allowing customization (important especially for analyzing sensitivity of parameter choices).
+
+
+
 
 ## Fixed level
 ### Lower Tropospheric Stability
