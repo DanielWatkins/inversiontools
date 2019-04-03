@@ -362,7 +362,7 @@ def kahl_inversions(data, params):
     inv_df.reset_index(inplace=True, drop=True)
     inv_df.index = inv_df.date
     inv_df.drop('date', inplace=True, axis=1)
-    return inv_df
+    return inv_df.loc[:,['dT', 'bh', 'dZ']]
 
 def mil_davis_activity(data):
     inv_df = data.groupby('date').apply(find_temperature_inversions, params)
