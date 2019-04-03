@@ -40,9 +40,14 @@ warnings.filterwarnings('ignore', 'invalid value encountered in true_divide', Ru
 warnings.filterwarnings('ignore', 'divide by zero encountered in true_divide', RuntimeWarning)
 
 def default_params():
+    """Default set of parameters. Parameters let the other functions
+    know what column names are as well as set options for the classification
+    of temperature inversions."""
+    
     return {'temperature': 'temperature',
            'height': 'height',
            'pressure': 'pressure',
+           'potential_temperature': 'potential_temperature',
            'iso_base': False,
            'iso_above': False,
            'iso_within': True,
