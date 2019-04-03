@@ -4,7 +4,7 @@ inversiontools is a set of functions for identifying and characterizing temperat
 Although the functions will work on any Pandas dataframe with columns for temperature, pressure, and height, I have designed the code with the Siphon library in mind, which has tools for importing radiosonde profiles from the IGRA2 archive and from the University of Wyoming archive.
 
 ## Functions
-### kahl1990
+### kahl_inversions
 Description of the algorithm:
 > Beginning at the surface, each temperature profile is scanned upward to locate the first layer in which the temperature increases with altitude. The bottom of this layer identifies the inversion base. The inversion top is defined as the bottom of the first subsequent layer in which the temperature decreases with altitude. Thin negative-lapse layers (<100 m) are ignored if they are embedded within a deeper inversion layer.
 
