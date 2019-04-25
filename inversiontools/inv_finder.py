@@ -42,7 +42,10 @@ warnings.filterwarnings('ignore', 'divide by zero encountered in true_divide', R
 def default_params():
     """Default set of parameters. Parameters let the other functions
     know what column names are as well as set options for the classification
-    of temperature inversions."""
+    of temperature inversions.
+
+    TODO: Add units, at least in description of default_params
+    """
     
     return {'temperature': 'temperature',
            'height': 'height',
@@ -348,7 +351,8 @@ def find_temperature_inversions(data, params):
     return layer_df
 
 def kahl_inversions(data, params):
-    """Parse the inversion layer df and return inversion measurements.
+    """Given a dataframe "data" with possibly many radiosonde profiles,
+    find the lowest temperature inversion in each following Kahl 1990.
     """
     
     inv_df = data.groupby('date').apply(find_temperature_inversions, params)
@@ -364,9 +368,51 @@ def kahl_inversions(data, params):
     inv_df.drop('date', inplace=True, axis=1)
     return inv_df.loc[:,['dT', 'bh', 'dZ']]
 
-def mil_davis_activity(data):
+def tmax(data, params):
+    """Definition of temperature inversion applied in the IGRA2 Derived
+    data set. Inversion top is defined as the temperature maximum, inversion
+    base is always the surface, inversion height is the height of the temperature
+    maximum, and inversion pressure is the pressure at the temperature maximum."""
+    import numpy as np
+    def apply_tmax(data, params):
+        """Locates the line in data with the maximum temperature and the line
+        with the maximum pressure, and differences them."""
+           
+        data_tmax = data.loc[data[params['temperature']].idxmax(),:]
+        data_pmax = data.loc[data[params['pressure']].idxmax(),:]
+        data_diff = data_tmax - data_pmax
+        data_diff[params['pressure']] = data_tmax[params['pressure']]
+        if data_diff[params['temperature']] < 0.1:
+            data_diff[params['temperature']] = np.nan
+            data_diff[params['pressure']] = np.nan
+            data_diff[params['height']] = np.nan
+        return data_diff
+
+    inv_df = data.groupby('date').apply(apply_tmax, params).loc[:, [params['pressure'],
+                                                                    params['height'],
+                                                                    params['temperature']]]
+    inv_df.rename({params['pressure']: 'inv_pressure',
+                   params['height']: 'inv_height',
+                   params['temperature']: 'inv_strength'}, axis=1)
+    return inv_df
+
+def tmax_hybrid(data):
+    # same as tmax, but starting from the inversion base determined by
+    # kahl1990
+    inv_df = data.groupby('date').apply(find_temperature_inversions, params)
+    inv_df.drop('date', axis=1, inplace=True)
+    inv_df.reset_index(inplace=True)
+
+    return
+
+
+def mil_davis_activity(data, params):
     inv_df = data.groupby('date').apply(find_temperature_inversions, params)
     inv_df['theta_top']
     inv_df['theta_bottom'] 
     # Need pressure at inversion top to be able to convert to potential temperature.
     # Check paper - I think it's average weighted by inversion thickness
+    # With potential temperature precalculated i.e. in the IGRA2 derived this can be adjusted easily
+
+#def lower_tropospheric_stability(data, params):
+    
